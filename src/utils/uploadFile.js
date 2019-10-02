@@ -26,7 +26,7 @@ export default ({
 
       await writeFile({ stream: fileStream, filePath });
 
-      const { id } = await new Model({
+      const { id, type } = await new Model({
         path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
       }).save();
