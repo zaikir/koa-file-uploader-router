@@ -11,6 +11,8 @@ export default ({
     model,
   });
 
+  // eslint-disable-next-line no-console
+  console.log(type);
   ctx.body = {
     url: `${fullPrefix}/${id}`,
     type,

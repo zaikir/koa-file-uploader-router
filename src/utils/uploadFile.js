@@ -26,12 +26,12 @@ export default ({
 
       await writeFile({ stream: fileStream, filePath });
 
-      const { id, type } = await new Model({
+      const { id } = await new Model({
         path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
       }).save();
 
-      resolve({ id, type });
+      resolve({ id, type: path.extname(filePath) });
     } catch (err) {
       reject(err);
     }
