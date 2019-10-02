@@ -1,16 +1,14 @@
-import getMany from './getMany';
+import path from 'path';
+import FileModel from '../models';
 import get from './get';
-import count from './count';
-import counts from './counts';
-import create from './create';
-import update from './update';
-import remove from './remove';
+import upload from './upload';
 
 export default ({
-  Router, model, prefix, briefColumns,
-  searchQuery, preCreate, postCreate,
-  preUpdate, postUpdate, removedKey,
-  roles, getRole = ({ user: { role } }) => role,
+  Router, mongoose, prefix, fullPrefix,
+  modelName = 'File',
+  uploadsFolder = path.resolve('uploads'),
+  allowedFormats = '*', roles,
+  getRole = ({ user: { role } }) => role,
   defaultMiddleware = async (ctx, next) => { await next(); },
   middleware = {},
 }) => {
@@ -35,14 +33,14 @@ export default ({
     }
     : async (ctx, next) => { await next(); };
 
+  const model = FileModel({ mongoose, modelName });
 
-  router.get('/', authMiddleware, middleware.getMany || defaultMiddleware, getMany({ model, briefColumns, searchQuery }));
-  router.get('/count', authMiddleware, middleware.count || defaultMiddleware, count({ model, searchQuery }));
-  router.post('/count', authMiddleware, middleware.count || defaultMiddleware, counts({ model, searchQuery }));
-  router.get('/:id', authMiddleware, middleware.get || defaultMiddleware, get({ model }));
-  router.post('/', authMiddleware, middleware.create || defaultMiddleware, create({ model, preCreate, postCreate }));
-  router.put('/', authMiddleware, middleware.update || defaultMiddleware, update({ model, preUpdate, postUpdate }));
-  router.delete('/:id', authMiddleware, middleware.remove || defaultMiddleware, remove({ model, removedKey }));
+  router.get('/:id', authMiddleware, middleware.get || defaultMiddleware,
+    get({ model, mongoose, uploadDir: uploadsFolder }));
+  router.post('/', authMiddleware, middleware.upload || defaultMiddleware,
+    upload({
+      model, fullPrefix: fullPrefix || `/api/${prefix}`, allowedFormats, uploadsFolder,
+    }));
 
   return router;
 };

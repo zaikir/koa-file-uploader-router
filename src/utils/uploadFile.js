@@ -1,14 +1,14 @@
 import Busboy from 'busboy';
 import path from 'path';
-import ObjectID from 'bson-objectid';
 import generateFilename from './generateFilename';
 import writeFile from './writeFile';
 
 export default ({
+  model: Model,
   headers,
   stream,
-  uploadsFolder = path.resolve('uploads'),
-  allowedFormats = '*',
+  uploadsFolder,
+  allowedFormats,
 }) => new Promise((resolve, reject) => {
   let isFileDetected = false;
 
@@ -22,10 +22,14 @@ export default ({
     }
 
     try {
-      const id = ObjectID().toString();
-      const filePath = await generateFilename({ uploadsFolder, filename: `${id}_${filename}` });
+      const filePath = await generateFilename({ uploadsFolder, filename: `${new Date().valueOf()}_${filename}` });
 
       await writeFile(fileStream, filePath);
+
+      const { id } = await new Model({
+        path: filePath,
+        type: path.extname(filePath),
+      }).save();
 
       resolve({ id });
     } catch (err) {
