@@ -10,7 +10,7 @@ export default async ({ uploadsFolder, filename }) => {
     now.getUTCDate().toString(),
   );
 
-  await ensureDir(path.join(uploadsFolder, dirName));
+  await ensureDir(dirName);
 
   return path.join(
     dirName,

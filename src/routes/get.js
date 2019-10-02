@@ -1,7 +1,7 @@
 import sendFile from 'koa-send';
 
 export default ({ model, uploadDir, mongoose }) => async (ctx) => {
-  const { id } = ctx.request.params;
+  const { id } = ctx.params;
 
   const sendFileConfig = {
     immutable: true,
@@ -19,5 +19,5 @@ export default ({ model, uploadDir, mongoose }) => async (ctx) => {
     return;
   }
 
-  await sendFile(ctx, file.originalPath, sendFileConfig);
+  await sendFile(ctx, file.path, sendFileConfig);
 };

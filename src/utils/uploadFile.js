@@ -24,10 +24,10 @@ export default ({
     try {
       const filePath = await generateFilename({ uploadsFolder, filename: `${new Date().valueOf()}_${filename}` });
 
-      await writeFile(fileStream, filePath);
+      await writeFile({ stream: fileStream, filePath });
 
       const { id } = await new Model({
-        path: filePath,
+        path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
       }).save();
 

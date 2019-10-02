@@ -1,11 +1,3 @@
-// export default () => async (ctx) => {
-//   ctx.body = await model.create(await preCreate(ctx));
-
-//   if (postCreate) {
-//     await postCreate(ctx.body);
-//   }
-// };
-
 import uploadFile from '../utils/uploadFile';
 
 export default ({
