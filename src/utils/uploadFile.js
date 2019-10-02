@@ -31,7 +31,7 @@ export default ({
         type: path.extname(filePath),
       }).save();
 
-      resolve({ id });
+      resolve({ id, type });
     } catch (err) {
       reject(err);
     }
