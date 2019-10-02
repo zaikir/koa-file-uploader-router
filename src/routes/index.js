@@ -7,7 +7,7 @@ export default ({
   Router, mongoose, prefix, fullPrefix,
   modelName = 'File',
   uploadsFolder = path.resolve('uploads'),
-  allowedFormats = '*', roles,
+  allowedFormats = '*', roles = [],
   getRole = ({ user: { role } }) => role,
   defaultMiddleware = async (ctx, next) => { await next(); },
   middleware = {},
