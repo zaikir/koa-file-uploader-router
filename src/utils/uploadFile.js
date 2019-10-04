@@ -1,7 +1,6 @@
 import Busboy from 'busboy';
 import path from 'path';
-import generateFilename from './generateFilename';
-import writeFile from './writeFile';
+import { uploadFile } from '../..';
 
 export default ({
   model: Model,
@@ -22,9 +21,7 @@ export default ({
     }
 
     try {
-      const filePath = await generateFilename({ uploadsFolder, filename: `${new Date().valueOf()}_${filename}` });
-
-      await writeFile({ stream: fileStream, filePath });
+      const filePath = await uploadFile({ stream: fileStream, filename, uploadsFolder });
 
       const { id } = await new Model({
         path: filePath.replace(uploadsFolder, ''),
