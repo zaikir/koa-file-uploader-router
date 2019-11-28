@@ -10,6 +10,7 @@ export default ({
   allowedFormats = '*', roles,
   getRole = ({ user: { role } }) => role,
   defaultMiddleware = async (ctx, next) => { await next(); },
+  notFoundMiddleware,
   middleware = {},
 }) => {
   const router = new Router({
@@ -36,7 +37,9 @@ export default ({
   const model = FileModel({ mongoose, modelName });
 
   router.get('/:id', authMiddleware, middleware.get || defaultMiddleware,
-    get({ model, mongoose, uploadDir: uploadsFolder }));
+    get({
+      model, mongoose, uploadDir: uploadsFolder, notFoundMiddleware,
+    }));
   router.post('/', authMiddleware, middleware.upload || defaultMiddleware,
     upload({
       model, fullPrefix: fullPrefix || `/api/${prefix}`, allowedFormats, uploadsFolder,

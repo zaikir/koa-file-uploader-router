@@ -1,6 +1,11 @@
 import sendFile from 'koa-send';
 
-export default ({ model, uploadDir, mongoose }) => async (ctx) => {
+export default ({
+  model, uploadDir, mongoose, notFoundMiddleware = (ctx, error) => {
+    ctx.body = error;
+    ctx.status = 404;
+  },
+}) => async (ctx) => {
   const { id } = ctx.params;
 
   const sendFileConfig = {
@@ -9,15 +14,21 @@ export default ({ model, uploadDir, mongoose }) => async (ctx) => {
   };
 
   if (!mongoose.mongo.ObjectId.isValid(id)) {
-    ctx.status = 404;
+    notFoundMiddleware(ctx);
     return;
   }
 
   const file = await model.findById(id);
   if (!file) {
-    ctx.status = 404;
+    notFoundMiddleware(ctx);
     return;
   }
 
-  await sendFile(ctx, file.path, sendFileConfig);
+  try {
+    await sendFile(ctx, file.path, sendFileConfig);
+  } catch (err) {
+    if (ctx.status === 404) {
+      notFoundMiddleware(ctx, err.message);
+    }
+  }
 };
