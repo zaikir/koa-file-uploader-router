@@ -36,10 +36,15 @@ export default ({
 
   const model = FileModel({ mongoose, modelName });
 
-  router.get('/:id', authMiddleware, middleware.get || defaultMiddleware,
-    get({
-      model, mongoose, uploadDir: uploadsFolder, notFoundMiddleware,
-    }));
+  const getRoute = get({
+    model, mongoose, uploadsFolder, notFoundMiddleware,
+  });
+
+  router.get('/:transformString/:id.:format', authMiddleware, middleware.get || defaultMiddleware, getRoute);
+  router.get('/:transformString/:id', authMiddleware, middleware.get || defaultMiddleware, getRoute);
+  router.get('/:id.:format', authMiddleware, middleware.get || defaultMiddleware, getRoute);
+  router.get('/:id', authMiddleware, middleware.get || defaultMiddleware, getRoute);
+
   router.post('/', authMiddleware, middleware.upload || defaultMiddleware,
     upload({
       model, fullPrefix: fullPrefix || `/api/${prefix}`, allowedFormats, uploadsFolder,
