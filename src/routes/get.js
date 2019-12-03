@@ -102,67 +102,71 @@ export default ({
     return;
   }
 
-  const sharpImage = sharp(path.join(uploadsFolder, file.path));
-
-  const metadata = await sharpImage.metadata();
-
-  const quality = {
-    quality: process.env.RESIZING_QUALITY || 90,
-  };
-
-  if (extractArea) {
-    sharpImage.extract({
-      left: relativeToAbsolute(croppingX, metadata.width),
-      top: relativeToAbsolute(croppingY, metadata.height),
-      width: relativeToAbsolute(croppingWidth, metadata.width),
-      height: relativeToAbsolute(croppingHeight, metadata.height),
-    });
-  }
-
-  if (width || height) {
-    const w = relativeToAbsolute(width, metadata.width);
-    const h = relativeToAbsolute(height, metadata.height);
-
-    sharpImage.resize(
-      fit === 'limit' ? limit(w, metadata.width) : w,
-      fit === 'limit' ? limit(h, metadata.height) : h,
-      {
-        fit: fitMap[fit],
-        fastShrinkOnLoad: true,
-        position: gravityMap[gravity],
-      },
-    ).jpeg(quality);
-  }
-
-
-  if (format) {
-    sharpImage.toFormat(format, quality);
-  }
-
-  const transformedBasename = path.basename(file.path, path.extname(file.path));
-  const transformedExtension = format ? `.${format}` : path.extname(file.path);
-  const transformedPath = path.join(
-    path.dirname(file.path),
-    `${transformedBasename}-${transformString}${transformedExtension}`,
-  );
-
-  await sharpImage.toFile(path.join(uploadsFolder, transformedPath));
-  sharpImage.end();
-
-  file.transformedImages = file.transformedImages || [];
-  file.transformedImages.push({
-    selector: transformString,
-    format,
-    path: transformedPath,
-  });
-
-  await file.save();
-
   try {
-    await sendFile(ctx, transformedPath, sendFileConfig);
-  } catch (err) {
-    if (ctx.status === 404) {
-      notFoundMiddleware(ctx, err.message);
+    const sharpImage = sharp(path.join(uploadsFolder, file.path));
+
+    const metadata = await sharpImage.metadata();
+
+    const quality = {
+      quality: process.env.RESIZING_QUALITY || 90,
+    };
+
+    if (extractArea) {
+      sharpImage.extract({
+        left: relativeToAbsolute(croppingX, metadata.width),
+        top: relativeToAbsolute(croppingY, metadata.height),
+        width: relativeToAbsolute(croppingWidth, metadata.width),
+        height: relativeToAbsolute(croppingHeight, metadata.height),
+      });
     }
+
+    if (width || height) {
+      const w = relativeToAbsolute(width, metadata.width);
+      const h = relativeToAbsolute(height, metadata.height);
+
+      sharpImage.resize(
+        fit === 'limit' ? limit(w, metadata.width) : w,
+        fit === 'limit' ? limit(h, metadata.height) : h,
+        {
+          fit: fitMap[fit],
+          fastShrinkOnLoad: true,
+          position: gravityMap[gravity],
+        },
+      ).jpeg(quality);
+    }
+
+
+    if (format) {
+      sharpImage.toFormat(format, quality);
+    }
+
+    const transformedBasename = path.basename(file.path, path.extname(file.path));
+    const transformedExtension = format ? `.${format}` : path.extname(file.path);
+    const transformedPath = path.join(
+      path.dirname(file.path),
+      `${transformedBasename}-${transformString}${transformedExtension}`,
+    );
+
+    await sharpImage.toFile(path.join(uploadsFolder, transformedPath));
+    sharpImage.end();
+
+    file.transformedImages = file.transformedImages || [];
+    file.transformedImages.push({
+      selector: transformString,
+      format,
+      path: transformedPath,
+    });
+
+    await file.save();
+
+    try {
+      await sendFile(ctx, transformedPath, sendFileConfig);
+    } catch (err) {
+      if (ctx.status === 404) {
+        notFoundMiddleware(ctx, err.message);
+      }
+    }
+  } catch (err) {
+    notFoundMiddleware(ctx, err.message);
   }
 };
