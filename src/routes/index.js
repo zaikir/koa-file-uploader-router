@@ -4,7 +4,7 @@ import get from './get';
 import upload from './upload';
 
 export default ({
-  Router, mongoose, prefix, fullPrefix,
+  Router, mongoose, prefix, fullPrefix, provider,
   modelName = 'File',
   uploadsFolder = path.resolve('uploads'),
   allowedFormats = '*', roles,
@@ -34,10 +34,10 @@ export default ({
     }
     : async (ctx, next) => { await next(); };
 
-  const model = FileModel({ mongoose, modelName });
+  const model = mongoose && FileModel({ mongoose, modelName });
 
   const getRoute = get({
-    model, mongoose, uploadsFolder, notFoundMiddleware,
+    model, mongoose, uploadsFolder, notFoundMiddleware, provider,
   });
 
   router.get('/:transformString/:id.:format', authMiddleware, middleware.get || defaultMiddleware, getRoute);
@@ -47,7 +47,7 @@ export default ({
 
   router.post('/', authMiddleware, middleware.upload || defaultMiddleware,
     upload({
-      model, fullPrefix: fullPrefix || `/api/${prefix}`, allowedFormats, uploadsFolder,
+      model, fullPrefix: fullPrefix || `/api/${prefix}`, allowedFormats, uploadsFolder, provider
     }));
 
   return router;

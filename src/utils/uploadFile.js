@@ -4,6 +4,7 @@ import { uploadFile } from '../..';
 
 export default ({
   model: Model,
+  provider,
   headers,
   stream,
   uploadsFolder,
@@ -23,10 +24,16 @@ export default ({
     try {
       const filePath = await uploadFile({ stream: fileStream, filename, uploadsFolder });
 
-      const { id } = await new Model({
+      const { id } = Model ? await new Model({
         path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
-      }).save();
+        transformedImages: []
+      }).save()
+      : await provider.save({
+        path: filePath.replace(uploadsFolder, ''),
+        type: path.extname(filePath),
+        transformedImages: []
+      });
 
       resolve({ id, type: path.extname(filePath) });
     } catch (err) {

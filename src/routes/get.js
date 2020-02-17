@@ -35,7 +35,7 @@ const relativeToAbsolute = (val, max) => (val <= 1 ? Math.round(val * max) : +va
 const limit = (val, max) => (val > max ? max : val);
 
 export default ({
-  model, uploadsFolder, mongoose, notFoundMiddleware = (ctx, error) => {
+  model: Model, provider, uploadsFolder, notFoundMiddleware = (ctx, error) => {
     ctx.body = error;
     ctx.status = 404;
   },
@@ -47,12 +47,10 @@ export default ({
     root: uploadsFolder,
   };
 
-  if (!mongoose.mongo.ObjectId.isValid(id)) {
-    notFoundMiddleware(ctx);
-    return;
-  }
+  const file = Model 
+    ? await model.findById(id)
+    : await provider.get(id);
 
-  const file = await model.findById(id);
   if (!file) {
     notFoundMiddleware(ctx);
     return;
@@ -157,7 +155,12 @@ export default ({
       path: transformedPath,
     });
 
-    await file.save();
+    if (Model) {
+      await file.save();
+    } else {
+      await provider.update(file)
+    }
+    
 
     try {
       await sendFile(ctx, transformedPath, sendFileConfig);
