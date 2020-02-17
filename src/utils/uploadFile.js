@@ -29,7 +29,7 @@ export default ({
         type: path.extname(filePath),
         transformedImages: []
       }).save()
-      : await provider.save({
+      : await provider.create({
         path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
         transformedImages: []
