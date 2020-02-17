@@ -22,7 +22,7 @@ export default ({
     }
 
     try {
-      const filePath = await uploadFile({ stream: fileStream, filename, uploadsFolder });
+      const filePath = await uploadFile({ stream: fileStream, filename, uploadsFolder});
 
       const { id } = Model ? await new Model({
         path: filePath.replace(uploadsFolder, ''),
