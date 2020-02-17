@@ -1,7 +1,7 @@
 import uploadFile from '../utils/uploadFile';
 
 export default ({
-  fullPrefix, model, allowedFormats, uploadsFolder,
+  fullPrefix, model, allowedFormats, uploadsFolder, provider,
 }) => async (ctx) => {
   const { id, type } = await uploadFile({
     headers: ctx.headers,
@@ -9,6 +9,7 @@ export default ({
     allowedFormats,
     uploadsFolder,
     model,
+    provider,
   });
 
   ctx.body = {
