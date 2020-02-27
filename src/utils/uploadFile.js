@@ -31,11 +31,13 @@ export default ({
       const { id } = Model ? await new Model({
         path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
+        name: filename,
         transformedImages: [],
         ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
       }).save()
         : await provider.create({
           path: filePath.replace(uploadsFolder, ''),
+          name: filename,
           type: path.extname(filePath),
           transformedImages: [],
           ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
