@@ -13,6 +13,10 @@ export default ({
   let isFileDetected = false;
 
   const busboy = new Busboy({ headers });
+  const data = {};
+  busboy.on('field', (fieldname, val) => {
+    data[fieldname] = val;
+  });
 
   busboy.on('file', async (fieldname, fileStream, filename) => {
     isFileDetected = true;
@@ -22,18 +26,20 @@ export default ({
     }
 
     try {
-      const filePath = await uploadFile({ stream: fileStream, filename, uploadsFolder});
+      const filePath = await uploadFile({ stream: fileStream, filename, uploadsFolder });
 
       const { id } = Model ? await new Model({
         path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
-        transformedImages: []
+        transformedImages: [],
+        ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
       }).save()
-      : await provider.create({
-        path: filePath.replace(uploadsFolder, ''),
-        type: path.extname(filePath),
-        transformedImages: []
-      });
+        : await provider.create({
+          path: filePath.replace(uploadsFolder, ''),
+          type: path.extname(filePath),
+          transformedImages: [],
+          ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
+        });
 
       resolve({ id, type: path.extname(filePath) });
     } catch (err) {
