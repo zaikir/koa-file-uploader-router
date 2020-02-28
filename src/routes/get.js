@@ -47,8 +47,8 @@ export default ({
     root: uploadsFolder,
   };
 
-  const file = Model 
-    ? await model.findById(id)
+  const file = Model
+    ? await Model.findById(id)
     : await provider.get(id);
 
   if (!file) {
@@ -158,9 +158,9 @@ export default ({
     if (Model) {
       await file.save();
     } else {
-      await provider.update(file)
+      await provider.update(file);
     }
-    
+
 
     try {
       await sendFile(ctx, transformedPath, sendFileConfig);

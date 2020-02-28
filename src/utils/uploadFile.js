@@ -9,6 +9,7 @@ export default ({
   stream,
   uploadsFolder,
   allowedFormats,
+  fullPrefix,
 }) => new Promise((resolve, reject) => {
   let isFileDetected = false;
 
@@ -43,7 +44,15 @@ export default ({
           ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
         });
 
-      resolve({ id, type: path.extname(filePath) });
+      const url = `${fullPrefix}/${id}`;
+
+      if (Model) {
+        await Model.updateOne({ _id: id }, { $set: { url } });
+      } else {
+        await provider.update({ id, url, transformedImages: [] });
+      }
+
+      resolve({ id, type: path.extname(filePath), url });
     } catch (err) {
       reject(err);
     }
