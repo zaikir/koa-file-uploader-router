@@ -17,5 +17,6 @@ export default ({
     url,
     type,
     public_id: id,
+    id,
   };
 };
