@@ -47,7 +47,7 @@ export default ({
 
   router.post('/', authMiddleware, middleware.upload || defaultMiddleware,
     upload({
-      model, fullPrefix: fullPrefix || `/api/${prefix}`, allowedFormats, uploadsFolder, provider
+      model, fullPrefix: fullPrefix || `/api/${prefix}`, allowedFormats, uploadsFolder, provider,
     }));
 
   return router;
