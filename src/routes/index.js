@@ -43,6 +43,7 @@ export default ({
   router.get('/:transformString/:id.:format', authMiddleware, middleware.get || defaultMiddleware, getRoute);
   router.get('/:transformString/:id', authMiddleware, middleware.get || defaultMiddleware, getRoute);
   router.get('/:id.:format', authMiddleware, middleware.get || defaultMiddleware, getRoute);
+  router.get('/:id/filename/*', authMiddleware, middleware.get || defaultMiddleware, getRoute);
   router.get('/:id', authMiddleware, middleware.get || defaultMiddleware, getRoute);
 
   router.post('/', authMiddleware, middleware.upload || defaultMiddleware,
