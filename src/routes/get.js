@@ -45,6 +45,11 @@ export default ({
   const sendFileConfig = {
     immutable: true,
     root: uploadsFolder,
+    ...ctx.query.range && {
+      setHeaders: ((res) => {
+        res.setHeader('Accept-Ranges', 'bytes');
+      }),
+    },
   };
 
   const file = Model
