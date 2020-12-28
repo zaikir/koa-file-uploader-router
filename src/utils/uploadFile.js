@@ -52,7 +52,9 @@ export default ({
         await provider.update({ id, url, transformedImages: [] });
       }
 
-      resolve({ id, type: path.extname(filePath), url });
+      resolve({
+        id, name: filename, type: path.extname(filePath), url,
+      });
     } catch (err) {
       reject(err);
     }
