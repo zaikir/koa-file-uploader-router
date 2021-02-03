@@ -127,15 +127,17 @@ export default ({
       const w = relativeToAbsolute(width, metadata.width);
       const h = relativeToAbsolute(height, metadata.height);
 
-      sharpImage.resize(
-        fit === 'limit' ? limit(w, metadata.width) : w,
-        fit === 'limit' ? limit(h, metadata.height) : h,
-        {
-          fit: fitMap[fit],
-          fastShrinkOnLoad: true,
-          position: gravityMap[gravity],
-        },
-      ).jpeg(quality);
+      sharpImage
+        .rotate()
+        .resize(
+          fit === 'limit' ? limit(w, metadata.width) : w,
+          fit === 'limit' ? limit(h, metadata.height) : h,
+          {
+            fit: fitMap[fit],
+            fastShrinkOnLoad: true,
+            position: gravityMap[gravity],
+          },
+        ).jpeg(quality);
     }
 
 
