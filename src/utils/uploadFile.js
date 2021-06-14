@@ -1,5 +1,6 @@
 import Busboy from 'busboy';
 import path from 'path';
+import sanitize from 'sanitize-filename';
 import { uploadFile } from '../..';
 
 export default ({
@@ -22,23 +23,24 @@ export default ({
   busboy.on('file', async (fieldname, fileStream, filename) => {
     isFileDetected = true;
 
-    if (allowedFormats !== '*' && !allowedFormats.includes(path.extname(filename).substring(1).toLowerCase())) {
+    const sanitizedFilename = sanitize(filename).replace(/%/g, '');
+    if (allowedFormats !== '*' && !allowedFormats.includes(path.extname(sanitizedFilename).substring(1).toLowerCase())) {
       reject(new Error('File format is not allowed'));
     }
 
     try {
-      const filePath = await uploadFile({ stream: fileStream, filename, uploadsFolder });
+      const filePath = await uploadFile({ stream: fileStream, filename: sanitizedFilename, uploadsFolder });
 
       const { id } = Model ? await new Model({
         path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
-        name: filename,
+        name: sanitizedFilename,
         transformedImages: [],
         ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
       }).save()
         : await provider.create({
           path: filePath.replace(uploadsFolder, ''),
-          name: filename,
+          name: sanitizedFilename,
           type: path.extname(filePath),
           transformedImages: [],
           ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
@@ -53,7 +55,7 @@ export default ({
       }
 
       resolve({
-        id, name: filename, type: path.extname(filePath), url,
+        id, name: sanitizedFilename, type: path.extname(filePath), url,
       });
     } catch (err) {
       reject(err);
