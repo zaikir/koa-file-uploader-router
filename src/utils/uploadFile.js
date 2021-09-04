@@ -1,6 +1,7 @@
 import Busboy from 'busboy';
 import path from 'path';
 import sanitize from 'sanitize-filename';
+import sharp from 'sharp';
 import { uploadFile } from '../..';
 
 export default ({
@@ -31,11 +32,26 @@ export default ({
     try {
       const filePath = await uploadFile({ stream: fileStream, filename: sanitizedFilename, uploadsFolder });
 
+      let width = 0;
+      let height = 0;
+
+      try {
+        const sharpImage = sharp(filePath);
+        const metadata = await sharpImage.metadata();
+
+        width = metadata.width || 0;
+        height = metadata.height || 0;
+      // eslint-disable-next-line no-empty
+      } finally {}
+
+
       const { id } = Model ? await new Model({
         path: filePath.replace(uploadsFolder, ''),
         type: path.extname(filePath),
         name: sanitizedFilename,
         transformedImages: [],
+        width,
+        height,
         ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
       }).save()
         : await provider.create({
