@@ -58,17 +58,19 @@ export default ({
           path: filePath.replace(uploadsFolder, ''),
           name: sanitizedFilename,
           type: path.extname(filePath),
+          width,
+          height,
           transformedImages: [],
           ...Object.assign({}, ...Object.entries(data).map(([key, value]) => ({ [key]: value }))),
         });
 
       const url = `${fullPrefix}/${id}`;
 
-      // if (Model) {
-      //   await Model.updateOne({ _id: id }, { $set: { url } });
-      // } else {
-      //   await provider.update({ id, url, transformedImages: [] });
-      // }
+      if (Model) {
+        await Model.updateOne({ _id: id }, { $set: { url } });
+      } else {
+        await provider.update({ id, url, transformedImages: [] });
+      }
 
       resolve({
         id, name: sanitizedFilename, type: path.extname(filePath), url,
