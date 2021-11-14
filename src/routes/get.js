@@ -9,10 +9,7 @@ export default ({
     ctx.status = 404;
   },
 }) => async (ctx) => {
-  console.log('here');
   const { id } = ctx.params;
-
-  console.log(id);
 
   const sendFileConfig = {
     immutable: true,
@@ -23,8 +20,6 @@ export default ({
       },
     }),
   };
-
-  console.log(sendFileConfig);
 
   const file = Model ? await Model.findById(id) : await provider.get(id);
 
