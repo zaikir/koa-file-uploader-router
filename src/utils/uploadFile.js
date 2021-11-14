@@ -2,7 +2,6 @@ import Busboy from 'busboy';
 import path from 'path';
 import { getPlaiceholder } from 'plaiceholder';
 import sanitize from 'sanitize-filename';
-import sharp from 'sharp';
 import { uploadFile } from '../..';
 
 export default ({
@@ -36,17 +35,6 @@ export default ({
       let width = 0;
       let height = 0;
       let imagePlaceholder = 0;
-
-      try {
-        const sharpImage = sharp(filePath);
-        const metadata = await sharpImage.metadata();
-
-        width = metadata.width || 0;
-        height = metadata.height || 0;
-      // eslint-disable-next-line no-empty
-      } catch (err) {
-        // noop
-      }
 
       try {
         const { base64 } = await getPlaiceholder(filePath);
