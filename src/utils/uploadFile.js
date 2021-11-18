@@ -1,6 +1,5 @@
 import Busboy from 'busboy';
 import path from 'path';
-import { getPlaiceholder } from 'plaiceholder';
 import sanitize from 'sanitize-filename';
 import { uploadFile } from '../..';
 
@@ -32,17 +31,17 @@ export default ({
     try {
       const filePath = await uploadFile({ stream: fileStream, filename: sanitizedFilename, uploadsFolder });
 
-      let width = 0;
-      let height = 0;
-      let imagePlaceholder = 0;
+      const width = 0;
+      const height = 0;
+      const imagePlaceholder = 0;
 
-      try {
-        const { base64 } = await getPlaiceholder(filePath);
-        imagePlaceholder = base64;
-      // eslint-disable-next-line no-empty
-      } catch (err) {
-        // noop
-      }
+      // try {
+      //   const { base64 } = await getPlaiceholder(filePath);
+      //   imagePlaceholder = base64;
+      // // eslint-disable-next-line no-empty
+      // } catch (err) {
+      //   // noop
+      // }
 
       const { id } = Model ? await new Model({
         path: filePath.replace(uploadsFolder, ''),
