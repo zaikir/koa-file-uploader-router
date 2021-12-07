@@ -44,6 +44,7 @@ export default ({
 
   const sendFileConfig = {
     immutable: true,
+    maxage: 1000 * 60 * 60 * 24 * 100,
     root: uploadsFolder,
     ...ctx.query.range && {
       setHeaders: ((res) => {
