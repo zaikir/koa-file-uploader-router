@@ -43,15 +43,13 @@ export default ({
 
         width = metadata.width || 0;
         height = metadata.height || 0;
-      // eslint-disable-next-line no-empty
       } catch (err) {
         // noop
       }
 
       try {
-        const { base64 } = await getPlaiceholder(filePath);
+        const { base64 } = await getPlaiceholder(filePath, { size: 64 });
         imagePlaceholder = base64;
-      // eslint-disable-next-line no-empty
       } catch (err) {
         // noop
       }
