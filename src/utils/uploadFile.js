@@ -3,6 +3,7 @@ import path from 'path';
 import { getPlaiceholder } from 'plaiceholder';
 import sanitize from 'sanitize-filename';
 import sharp from 'sharp';
+import fs from 'fs';
 import { uploadFile } from '../..';
 
 export default ({
@@ -48,7 +49,8 @@ export default ({
       }
 
       try {
-        const { base64 } = await getPlaiceholder(filePath, { size: 64 });
+        const buffer = await fs.promises.readFile(filePath);
+        const { base64 } = await getPlaiceholder(buffer, { size: 64 });
         imagePlaceholder = base64;
       } catch (err) {
         // noop
