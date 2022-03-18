@@ -6,6 +6,8 @@ import sharp from 'sharp';
 import fs from 'fs';
 import { uploadFile } from '../..';
 
+sharp.cache(false);
+
 export default ({
   model: Model,
   provider,

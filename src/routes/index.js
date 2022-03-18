@@ -2,6 +2,7 @@ import path from 'path';
 import FileModel from '../models';
 import get from './get';
 import upload from './upload';
+import rotate from './rotate';
 
 export default ({
   Router, mongoose, prefix, fullPrefix, provider,
@@ -45,6 +46,11 @@ export default ({
   router.get('/:id.:format', authMiddleware, middleware.get || defaultMiddleware, getRoute);
   router.get('/:id/filename/*', authMiddleware, middleware.get || defaultMiddleware, getRoute);
   router.get('/:id', authMiddleware, middleware.get || defaultMiddleware, getRoute);
+
+  router.post('/:id/rotate', authMiddleware, middleware.rotate || defaultMiddleware,
+    rotate({
+      model, allowedFormats, uploadsFolder, provider,
+    }));
 
   router.post('/', authMiddleware, middleware.upload || defaultMiddleware,
     upload({
