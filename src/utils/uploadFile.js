@@ -38,7 +38,7 @@ export default ({
 
       let width = 0;
       let height = 0;
-      let imagePlaceholder = 0;
+      let imagePlaceholder = null;
 
       try {
         const sharpImage = sharp(filePath);
@@ -51,9 +51,24 @@ export default ({
       }
 
       try {
-        const buffer = await fs.promises.readFile(filePath);
-        const { base64 } = await getPlaiceholder(buffer, { size: 64 });
-        imagePlaceholder = base64;
+        const { dominant } = await sharp(filePath).stats();
+        const { r, g, b } = dominant;
+
+        const buffer = await sharp({
+          create: {
+            width: 1,
+            height: 1,
+            channels: 3,
+            background: { r, g, b },
+          },
+        })
+          .jpeg()
+          .toBuffer();
+
+        const base64 = `data:image/jpeg;base64,${buffer.toString('base64')}`;
+        if (base64) {
+          imagePlaceholder = base64;
+        }
       } catch (err) {
         // noop
       }
