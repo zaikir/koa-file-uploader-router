@@ -1,9 +1,7 @@
 import Busboy from 'busboy';
 import path from 'path';
-import { getPlaiceholder } from 'plaiceholder';
 import sanitize from 'sanitize-filename';
 import sharp from 'sharp';
-import fs from 'fs';
 import { uploadFile } from '../..';
 
 sharp.cache(false);
