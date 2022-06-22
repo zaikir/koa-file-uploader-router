@@ -1,6 +1,6 @@
 {
   "name": "koa-file-uploader-router",
-  "version": "1.0.35.6",
+  "version": "1.0.35.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -27,6 +27,7 @@
   "homepage": "https://github.com/ZaidulinKirill/koa-file-uploader-router#readme",
   "dependencies": {
     "busboy": "^0.3.1",
+    "exif-be-gone": "^1.2.2",
     "koa-send": "^5.0.0",
     "node-gyp": "^9.0.0",
     "plaiceholder": "^2.0.1",

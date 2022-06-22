@@ -1,6 +1,7 @@
 import fs from 'fs';
+import ExifTransformer from 'exif-be-gone';
 
-export default ({ stream, filePath }) => new Promise((resolve, reject) => {
+export default ({ stream: reader, filePath }) => new Promise((resolve, reject) => {
   const writer = fs.createWriteStream(filePath);
 
   writer.on('error', (err) => {
@@ -12,5 +13,5 @@ export default ({ stream, filePath }) => new Promise((resolve, reject) => {
     resolve();
   });
 
-  stream.pipe(writer);
+  reader.pipe(new ExifTransformer()).pipe(writer);
 });
