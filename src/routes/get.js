@@ -178,6 +178,10 @@ export default ({
       }
     }
   } catch (err) {
-    notFoundMiddleware(ctx, err.message);
+    try {
+      await sendFile(ctx, file.path, sendFileConfig);
+    } catch (err2) {
+      notFoundMiddleware(ctx, err.message);
+    }
   }
 };
