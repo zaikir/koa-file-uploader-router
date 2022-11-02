@@ -13,5 +13,6 @@ export default ({ stream: reader, filePath }) => new Promise((resolve, reject) =
     resolve();
   });
 
-  reader.pipe(new ExifTransformer()).pipe(writer);
+  // .pipe(new ExifTransformer())
+  reader.pipe(writer);
 });
